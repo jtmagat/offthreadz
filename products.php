@@ -7,7 +7,7 @@
 <!-- Load Inter Font -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-<style>
+<style> 
   body {
     font-family: 'Inter', 'Segoe UI', sans-serif;
     background-color: #f8f9fa;
@@ -232,6 +232,39 @@
     font-weight: bold;
     font-size: 0.95rem;
   }
+
+  .hero {
+  position: relative;
+  height: 80vh;
+  overflow: hidden;
+}
+
+.hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(70%);
+}
+
+.hero-text {
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  transform: translateY(-50%);
+  color: white;
+}
+
+.shop-btn {
+  padding: 12px 24px;
+  background: white;
+  color: black;
+  border-radius: 4px;
+  font-weight: 600;
+  text-decoration: none;
+  margin-top: 10px;
+  display: inline-block;
+}
+
 </style>
 
 
@@ -301,6 +334,17 @@
     <a href="#"><i class="icon-cart">🛒</i></a>
   </div>
 </header>
+
+
+<section class="hero">
+  <img src="assets/onee.jpg" alt="New Drop" class="hero-img">
+  <div class="hero-text">
+    <h1>DROP 03 OUT NOW</h1>
+    <a href="products.php" class="shop-btn">SHOP NOW</a>
+  </div>
+</section>
+
+
 <section class="product-section">
   <h2>Latest Drops</h2>
   <div class="product-grid">
@@ -365,7 +409,7 @@
 
 <script>
   let lastScrollTop = 0;
-  const navbar = document.getElementById("navbar");
+  const navbar = document.getElementById("navbar");s
 
   window.addEventListener("scroll", () => {
     let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
