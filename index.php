@@ -10,33 +10,34 @@
 <style> 
   body {
     font-family: 'Inter', 'Segoe UI', sans-serif;
-    background-color: #f8f9fa;
+    background-color: #000;
+    color: #fff;
     margin: 0;
     padding: 0;
   }
 
   .top-navbar {
     display: flex;
-    justify-content: space-between;s
+    justify-content: space-between;
     align-items: center;
     padding: 1.2rem 2rem;
-    background-color: white;
+    background-color: #000;
     position: sticky;
     top: 0;
     z-index: 1000;
     border-radius: 0 0 15px 15px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 10px rgba(255,255,255,0.05);
   }
 
   .top-navbar a {
-    color: #000;
+    color: #fff;
     text-decoration: none;
     margin: 0 10px;
     font-weight: 500;
   }
 
   .top-navbar a:hover {
-    color: #6e6b6bff;
+    color: #ccc;
   }
 
   .nav-left, .nav-right {
@@ -59,11 +60,11 @@
     position: absolute;
     top: 130%;
     left: 0;
-    background: white;
-    border: 1px solid #ccc;
+    background: #111;
+    border: 1px solid #444;
     border-radius: 8px;
     padding: 0.5rem 1rem;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 8px rgba(255,255,255,0.05);
     z-index: 999;
   }
 
@@ -75,12 +76,14 @@
     display: block;
     padding: 5px 0;
     white-space: nowrap;
+    color: #fff;
   }
 
   .icon-search, .icon-user, .icon-cart {
     font-size: 1.1rem;
     margin: 0 8px;
     cursor: pointer;
+    color: #fff;
   }
 
   .search-wrapper {
@@ -92,11 +95,11 @@
     position: absolute;
     top: 40px;
     right: 0;
-    background-color: white;
+    background-color: #111;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #444;
     border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(255,255,255,0.05);
     display: none;
     flex-direction: row;
     gap: 8px;
@@ -104,64 +107,64 @@
   }
 
   #search-filter-form input,
-  #search-filter-form select,
-  #search-filter-form button {
+  #search-filter-form select {
     padding: 8px 10px;
     font-size: 0.9rem;
-    border: 1px solid #ccc;
+    border: 1px solid #555;
     border-radius: 5px;
+    background-color: #000;
+    color: #fff;
   }
 
   #search-filter-form button {
-    background-color: #111;
-    color: white;
+    background-color: #fff;
+    color: #000;
     border: none;
     cursor: pointer;
   }
 
   .product-section {
     padding: 40px 60px;
-    background-color: #fff;
+    background-color: #000;
   }
 
   .product-section h2 {
     text-align: center;
     font-size: 2rem;
     margin-bottom: 30px;
-    color: #111;
+    color: #fff;
   }
 
   .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* wider cards */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 40px;
   }
 
-.product-card {
-  background-color: #fff;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
-  text-decoration: none;
-  color: inherit;
-  transition: transform 0.2s ease;
-  height: 380px; /* ⬅️ shorter card */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
+  .product-card {
+    background-color: #111;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(255, 255, 255, 0.08);
+    text-decoration: none;
+    color: #fff;
+    transition: transform 0.2s ease;
+    height: 380px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
 
   .product-card:hover {
     transform: translateY(-5px);
   }
 
-.product-img-wrap {
-  position: relative;
-  width: 100%;
-  height: 260px; /* ⬅️ shorter image height */
-  overflow: hidden;
-}
+  .product-img-wrap {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    overflow: hidden;
+  }
 
   .product-img-wrap img {
     position: absolute;
@@ -185,23 +188,21 @@
     opacity: 0;
   }
 
-  /* ✅ Product name - bold and black */
   .product-card h3 {
     font-size: 1rem;
     font-weight: 600;
     padding: 10px 15px 5px;
-    color: #000;
+    color: #fff;
     text-align: center;
     text-decoration: none;
   }
 
-  /* ✅ Product price - normal weight, smaller font, black */
   .product-card span {
     display: block;
     padding: 0 15px 15px;
     font-weight: 400;
     font-size: 0.85rem;
-    color: #000;
+    color: #ccc;
     text-align: center;
     text-decoration: none;
   }
@@ -234,38 +235,38 @@
   }
 
   .hero {
-  position: relative;
-  height: 80vh;
-  overflow: hidden;
-}
+    position: relative;
+    height: 80vh;
+    overflow: hidden;
+  }
 
-.hero-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: brightness(70%);
-}
+  .hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(70%);
+  }
 
-.hero-text {
-  position: absolute;
-  top: 50%;
-  left: 10%;
-  transform: translateY(-50%);
-  color: white;
-}
+  .hero-text {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    transform: translateY(-50%);
+    color: white;
+  }
 
-.shop-btn {
-  padding: 12px 24px;
-  background: white;
-  color: black;
-  border-radius: 4px;
-  font-weight: 600;
-  text-decoration: none;
-  margin-top: 10px;
-  display: inline-block;
-}
-
+  .shop-btn {
+    padding: 12px 24px;
+    background: white;
+    color: black;
+    border-radius: 4px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 10px;
+    display: inline-block;
+  }
 </style>
+
 
 
 <header id="navbar" class="top-navbar">
@@ -409,7 +410,7 @@
 
 <script>
   let lastScrollTop = 0;
-  const navbar = document.getElementById("navbar");s
+  const navbar = document.getElementById("navbar");
 
   window.addEventListener("scroll", () => {
     let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
