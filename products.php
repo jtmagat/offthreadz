@@ -1,32 +1,30 @@
 <?php include('includes/header.php'); ?>
-<!-- Load Inter Font -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<!-- Load Inter Font -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 
-<!-- Load Inter Font -->
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-
-<style> 
-  body {
-    font-family: 'Inter', 'Segoe UI', sans-serif;
-    background-color: #000;
-    color: #fff;
+<style>
+  * {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
   }
 
-  .top-navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.2rem 2rem;
+  body {
+    font-family: 'Inter', sans-serif;
     background-color: #000;
+    color: #fff;
+  }
+
+  /* Transparent Navbar */
+  .top-navbar {
     position: sticky;
     top: 0;
     z-index: 1000;
-    border-radius: 0 0 15px 15px;
-    box-shadow: 0 4px 10px rgba(255,255,255,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.85);
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #222;
   }
 
   .top-navbar a {
@@ -46,7 +44,7 @@
   }
 
   .nav-center .logo {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: bold;
     letter-spacing: 2px;
   }
@@ -64,7 +62,6 @@
     border: 1px solid #444;
     border-radius: 8px;
     padding: 0.5rem 1rem;
-    box-shadow: 0 4px 8px rgba(255,255,255,0.05);
     z-index: 999;
   }
 
@@ -74,16 +71,15 @@
 
   .dropdown-menu a {
     display: block;
-    padding: 5px 0;
-    white-space: nowrap;
+    padding: 6px 0;
     color: #fff;
+    white-space: nowrap;
   }
 
   .icon-search, .icon-user, .icon-cart {
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin: 0 8px;
     cursor: pointer;
-    color: #fff;
   }
 
   .search-wrapper {
@@ -121,10 +117,52 @@
     color: #000;
     border: none;
     cursor: pointer;
+    padding: 8px 12px;
+    font-weight: bold;
   }
 
+  /* Hero Banner */
+  .hero-banner {
+    width: 100%;
+    height: 80vh;
+    background: url('assets/banner1.png') center center / cover no-repeat;
+    position: relative;
+  }
+
+  /* Marquee */
+   .marquee-container {
+    overflow: hidden;
+    white-space: nowrap;
+    background-color: #000;
+    color: #fff;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+    padding: 12px 0;
+  }
+
+  .marquee-track {
+    display: inline-flex;
+    animation: scroll-left 20s linear infinite;
+  }
+
+  .marquee-track span {
+    font-weight: 600;
+    font-size: 1rem;
+    padding-right: 50px;
+  }
+
+  @keyframes scroll-left {
+    from {
+      transform: translateX(0%);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* Product Section */
   .product-section {
-    padding: 40px 60px;
+    padding: 60px 40px;
     background-color: #000;
   }
 
@@ -132,7 +170,6 @@
     text-align: center;
     font-size: 2rem;
     margin-bottom: 30px;
-    color: #fff;
   }
 
   .product-grid {
@@ -187,33 +224,28 @@
   .product-card:hover .front {
     opacity: 0;
   }
+.product-card h3 {
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 10px 15px 5px;
+  color: #fff; 
+  text-align: center;
+  text-decoration: none; 
+}
 
-  .product-card h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    padding: 10px 15px 5px;
-    color: #fff;
-    text-align: center;
-    text-decoration: none;
-  }
-
-  .product-card span {
-    display: block;
-    padding: 0 15px 15px;
-    font-weight: 400;
-    font-size: 0.85rem;
-    color: #ccc;
-    text-align: center;
-    text-decoration: none;
-  }
-
-  .product-card a {
-    text-decoration: none;
-  }
-
-  .btn-view {
-    display: none;
-  }
+.product-card span {
+  display: block;
+  padding: 0 15px 15px;
+  font-weight: 400;
+  font-size: 0.9rem;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+}
+.product-card a {
+  text-decoration: none !important;
+  color: inherit;
+}
 
   .out-of-stock {
     opacity: 0.5;
@@ -233,42 +265,9 @@
     font-weight: bold;
     font-size: 0.95rem;
   }
-
-  .hero {
-    position: relative;
-    height: 80vh;
-    overflow: hidden;
-  }
-
-  .hero-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    filter: brightness(70%);
-  }
-
-  .hero-text {
-    position: absolute;
-    top: 50%;
-    left: 10%;
-    transform: translateY(-50%);
-    color: white;
-  }
-
-  .shop-btn {
-    padding: 12px 24px;
-    background: white;
-    color: black;
-    border-radius: 4px;
-    font-weight: 600;
-    text-decoration: none;
-    margin-top: 10px;
-    display: inline-block;
-  }
 </style>
 
-
-
+<!-- Navbar -->
 <header id="navbar" class="top-navbar">
   <div class="nav-left">
     <a href="#">New Arrivals</a>
@@ -296,20 +295,19 @@
 
   <div class="nav-right">
     <div class="dropdown">
-      <a href="#">
-        <img src="https://flagcdn.com/ph.svg" alt="PH Flag" style="width: 20px;"> PHP ▾
-      </a>
+      <a href="#"><img src="https://flagcdn.com/ph.svg" alt="PH Flag" style="width: 20px;"> PHP ▾</a>
       <div class="dropdown-menu">
         <a href="#">USD</a>
         <a href="#">EUR</a>
       </div>
     </div>
+
     <div class="search-wrapper">
       <a href="#" id="search-toggle">
         <i class="icon-search">🔍</i>
       </a>
 
-      <form method="GET" class="filter-bar" id="search-filter-form" style="display: none;">
+      <form method="GET" class="filter-bar" id="search-filter-form">
         <input type="text" name="search" placeholder="Search..." value="<?= $_GET['search'] ?? '' ?>" />
         <select name="category">
           <option value="">All Categories</option>
@@ -331,21 +329,24 @@
         <button type="submit">Apply</button>
       </form>
     </div>
+
     <a href="#"><i class="icon-user">👤</i></a>
     <a href="#"><i class="icon-cart">🛒</i></a>
   </div>
 </header>
 
+<!-- Hero -->
+<div class="hero-banner"></div>
 
-<section class="hero">
-  <img src="assets/onee.jpg" alt="New Drop" class="hero-img">
-  <div class="hero-text">
-    <h1>DROP 03 OUT NOW</h1>
-    <a href="products.php" class="shop-btn">SHOP NOW</a>
+<!-- Looping Marquee -->
+<div class="marquee-container">
+  <div class="marquee-track">
+    <span>OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •    </span>
+    <span>OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •  OFFTHREADZ  •    </span>
   </div>
-</section>
+</div>
 
-
+<!-- Products -->
 <section class="product-section">
   <h2>Latest Drops</h2>
   <div class="product-grid">
@@ -394,7 +395,6 @@
         echo '<h3 class="product-name">' . htmlspecialchars($row["name"]) . '</h3>';
         echo '<span>₱' . number_format($row["price"], 2) . '</span>';
         echo '</a>';
-
         echo '</div>';
       }
     } else {
@@ -414,11 +414,7 @@
 
   window.addEventListener("scroll", () => {
     let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    if (scrollTop > lastScrollTop) {
-      navbar.style.transform = "translateY(-100%)";
-    } else {
-      navbar.style.transform = "translateY(0)";
-    }
+    navbar.style.transform = scrollTop > lastScrollTop ? "translateY(-100%)" : "translateY(0)";
     lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
   });
 
