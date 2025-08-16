@@ -58,7 +58,7 @@ $products = $conn->query("SELECT * FROM products ORDER BY id DESC");
       color: #fff;
     }
     .edit:hover {
-      background: #009acd;
+      background: #ffffffff;
     }
     .delete:hover {
       background: #c53030;
@@ -83,7 +83,7 @@ $products = $conn->query("SELECT * FROM products ORDER BY id DESC");
 
   <div class="topbar">
     <h2>🛒 Product List</h2>
-    <a href="add_product.php">+ Add New Product</a>
+     <a href="dashboard.php" class="logout-btn" style="position: static; background: #000000ff;">← Back to Dashboard</a>
   </div>
 
   <table>

@@ -15,15 +15,15 @@ if ($res) {
     $productCount = $row['total'] ?? 0;
 }
 
-// STOCK COUNT (Assuming 'quantity' column exists in products)
+// STOCK COUNT
 $stockCount = 0;
-$res = $conn->query("SELECT SUM(quantity) AS total FROM products");
+$res = $conn->query("SELECT SUM(stock_s + stock_m + stock_l + stock_xl) AS total FROM products");
 if ($res) {
     $row = $res->fetch_assoc();
     $stockCount = $row['total'] ?? 0;
 }
 
-// SALES (Assuming 'sales' table exists with 'amount' column)
+// SALES
 $sales = 0;
 $res = $conn->query("SELECT SUM(amount) AS total FROM sales");
 if ($res) {
@@ -31,7 +31,7 @@ if ($res) {
     $sales = $row['total'] ?? 0;
 }
 
-// ORDERS (Assuming 'orders' table exists)
+// ORDERS
 $orders = 0;
 $res = $conn->query("SELECT COUNT(*) AS total FROM orders");
 if ($res) {
@@ -41,45 +41,50 @@ if ($res) {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Dashboard – OFFTHREADZ</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background-color: #0a0a0a;
-      color: white;
+      background: linear-gradient(135deg, #0f0f0f, #1c1c1c);
+      color: #f4f4f4;
       padding: 40px;
     }
 
     h1 {
-      font-size: 32px;
-      margin-bottom: 20px;
+      font-size: 34px;
+      margin-bottom: 30px;
     }
 
     .dashboard {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 25px;
     }
 
     .card {
-      background-color: #1a1a1a;
+      background: linear-gradient(145deg, #1a1a1a, #222);
       border-radius: 18px;
       padding: 30px;
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.03);
+      box-shadow: 0 0 12px rgba(0, 255, 255, 0.07);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 0 20px rgba(255, 0, 0, 0.2);
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
     }
 
     .card h2 {
-      font-size: 18px;
-      color: #aaa;
+      font-size: 15px;
+      color: #9a9a9a;
       margin-bottom: 10px;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -88,31 +93,73 @@ if ($res) {
     .card .value {
       font-size: 36px;
       font-weight: bold;
-      color: #fff;
+      color: #ffffff;
     }
 
-    .logout-btn {
-      background: #e50914;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      text-decoration: none;
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      font-weight: bold;
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
     }
 
-    .logout-btn:hover {
-      background: #b00610;
+    .buttons {
+    display: flex;
+    gap: 12px;
+  }
+
+  .nav-btn {
+    background: #ffffff;
+    color: #1a1a1a;
+    padding: 10px 18px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.3s ease;
+  }
+
+  .nav-btn:hover {
+    background: #e5e5e5;
+  }
+
+  .logout-btn {
+    background: #ffffff;
+    color: #c40812;
+    border: 2px solid #c40812;
+    padding: 10px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  .logout-btn:hover {
+    background: #f8d7da;
+    color: #a4000d;
+  }
+
+    @media (max-width: 600px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
 <body>
 
-  <a href="logout.php" class="logout-btn">Logout</a>
+ <div class="topbar">
   <h1>Welcome, <?= htmlspecialchars($_SESSION['username']) ?> 👋</h1>
+  <div class="buttons">
+    <a href="add_product.php" class="nav-btn"> Add Product</a>
+    <a href="upload.php" class="nav-btn"> All Products</a>
+    <a href="logout.php" class="logout-btn"> Logout</a>
+  </div>
+</div>
+
 
   <div class="dashboard">
     <div class="card">

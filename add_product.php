@@ -106,7 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin-top: 12px;
             border-radius: 8px;
             border: 1px solid #444;
-            background-color: #2a2a2a;
+            background-color: #181717ff;
             color: #ffffff;
             font-size: 16px;
         }
@@ -169,6 +169,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="container">
         <h2>Add New Product</h2>
 
+           <a href="dashboard.php" class="logout-btn" style="position: static; background: #000000ff;">← Back to Dashboard</a>
+
         <?php if ($success): ?>
             <div class="message success"><?= $success ?></div>
         <?php elseif ($error): ?>
@@ -198,7 +200,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <button type="submit">Upload Product</button>
         </form>
 
-        <a class="back-link" href="products.php">← Back to Product List</a>
     </div>
 </body>
 </html>
