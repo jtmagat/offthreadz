@@ -154,6 +154,7 @@ if ($res) {
  <div class="topbar">
   <h1>Welcome, <?= htmlspecialchars($_SESSION['username']) ?> 👋</h1>
   <div class="buttons">
+    <a href="index.php" class="nav-btn"> Why OFFT?</a>
     <a href="add_product.php" class="nav-btn"> Add Product</a>
     <a href="upload.php" class="nav-btn"> All Products</a>
     <a href="logout.php" class="logout-btn"> Logout</a>

@@ -13,51 +13,81 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = $_POST["name"] ?? '';
     $desc = $_POST["description"] ?? '';
     $price = $_POST["price"] ?? '';
+    $type = $_POST["type"] ?? ''; // ✅ Product type (dropdown)
+    $stock_s = $_POST["stock_s"] ?? 0;
+    $stock_m = $_POST["stock_m"] ?? 0;
+    $stock_l = $_POST["stock_l"] ?? 0;
+    $stock_xl = $_POST["stock_xl"] ?? 0;
 
     $frontImageName = $_FILES['front_image']['name'] ?? '';
     $backImageName = $_FILES['back_image']['name'] ?? '';
+    $sizeChartName = $_FILES['size_chart']['name'] ?? '';
+    
     $frontPath = '';
     $backPath = '';
+    $sizeChartPath = '';
 
-    if (!empty($name) && !empty($desc) && !empty($price)) {
+    if (!empty($name) && !empty($desc) && !empty($price) && !empty($type)) {
 
         // FRONT IMAGE
         if (!empty($frontImageName)) {
-            $frontImageName = basename($frontImageName); // keep extension like .jpeg
+            $frontImageName = basename($frontImageName);
             move_uploaded_file($_FILES['front_image']['tmp_name'], "assets/" . $frontImageName);
             $frontPath = "assets/" . $frontImageName;
         }
 
         // BACK IMAGE
         if (!empty($backImageName)) {
-            $backImageName = basename($backImageName); // keep extension like .jpeg
+            $backImageName = basename($backImageName);
             move_uploaded_file($_FILES['back_image']['tmp_name'], "assets/" . $backImageName);
             $backPath = "assets/" . $backImageName;
         }
 
-        // Save to DB
-        $stmt = $conn->prepare("INSERT INTO products (name, description, price, front_image, back_image) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssdss", $name, $desc, $price, $frontPath, $backPath);
+        // SIZE CHART IMAGE
+        if (!empty($sizeChartName)) {
+            $sizeChartName = basename($sizeChartName);
+            move_uploaded_file($_FILES['size_chart']['tmp_name'], "assets/" . $sizeChartName);
+            $sizeChartPath = "assets/" . $sizeChartName;
+        }
+
+        // ✅ Save to DB (products table with type)
+        $stmt = $conn->prepare("INSERT INTO products (name, description, price, type, stock_s, stock_m, stock_l, stock_xl, front_image, back_image, size_chart) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssdsiidssss", $name, $desc, $price, $type, $stock_s, $stock_m, $stock_l, $stock_xl, $frontPath, $backPath, $sizeChartPath);
 
         if ($stmt->execute()) {
             $product_id = $stmt->insert_id;
 
-            // Additional images
-            $totalFiles = count($_FILES['images']['name']);
-            $targetDir = "uploads/";
+            // ✅ Save stock sizes in product_sizes table
+            $sizes_data = [
+                ['S', $stock_s],
+                ['M', $stock_m],
+                ['L', $stock_l],
+                ['XL', $stock_xl]
+            ];
+            foreach ($sizes_data as $size_row) {
+                $size_stmt = $conn->prepare("INSERT INTO product_sizes (product_id, size, stock) VALUES (?, ?, ?)");
+                $size_stmt->bind_param("isi", $product_id, $size_row[0], $size_row[1]);
+                $size_stmt->execute();
+            }
 
-            for ($i = 0; $i < $totalFiles; $i++) {
-                $imageName = basename($_FILES["images"]["name"][$i]);
-                $imagePath = "uploads/" . $imageName;
+            // ✅ Additional images (optional)
+            if (!empty($_FILES['images']['name'][0])) {
+                $totalFiles = count($_FILES['images']['name']);
+                $targetDir = "uploads/";
 
-                if (move_uploaded_file($_FILES["images"]["tmp_name"][$i], $targetDir . $imageName)) {
-                    $img_stmt = $conn->prepare("INSERT INTO product_images (product_id, image_url) VALUES (?, ?)");
-                    $img_stmt->bind_param("is", $product_id, $imagePath);
-                    $img_stmt->execute();
+                for ($i = 0; $i < $totalFiles; $i++) {
+                    $imageName = basename($_FILES["images"]["name"][$i]);
+                    $imagePath = $targetDir . $imageName;
+
+                    if (move_uploaded_file($_FILES["images"]["tmp_name"][$i], $imagePath)) {
+                        $img_stmt = $conn->prepare("INSERT INTO product_images (product_id, image_url) VALUES (?, ?)");
+                        $img_stmt->bind_param("is", $product_id, $imagePath);
+                        $img_stmt->execute();
+                    }
                 }
             }
 
-            $success = "✅ Product and images uploaded successfully!";
+            $success = "✅ Product and sizes uploaded successfully!";
         } else {
             $error = "❌ Failed to insert product.";
         }
@@ -100,20 +130,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         input[type="number"],
         textarea,
         input[type="file"],
+        select,
         button {
             width: 100%;
             padding: 12px;
             margin-top: 12px;
             border-radius: 8px;
             border: 1px solid #444;
-            background-color: #181717ff;
+            background-color: #181717;
             color: #ffffff;
             font-size: 16px;
-        }
-
-        input::placeholder,
-        textarea::placeholder {
-            color: #888;
         }
 
         textarea {
@@ -122,16 +148,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         button {
-            background-color: #00bfff;
-            color: white;
+            background-color: white;
+            color: black;
             font-weight: bold;
             border: none;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: 0.3s;
         }
 
         button:hover {
-            background-color: #009acd;
+            background-color: #ddd;
         }
 
         .message {
@@ -156,12 +182,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             display: block;
             text-align: center;
             margin-top: 20px;
-            color: #00bfff;
+            background: white;
+            color: black;
+            padding: 10px;
             text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
         }
 
         .back-link:hover {
-            text-decoration: underline;
+            background: #ddd;
         }
     </style>
 </head>
@@ -169,7 +199,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="container">
         <h2>Add New Product</h2>
 
-           <a href="dashboard.php" class="logout-btn" style="position: static; background: #000000ff;">← Back to Dashboard</a>
+        <a href="dashboard.php" class="back-link">← Back to Dashboard</a>
 
         <?php if ($success): ?>
             <div class="message success"><?= $success ?></div>
@@ -181,12 +211,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="text" name="name" placeholder="Product Name" required>
             <textarea name="description" placeholder="Description" required></textarea>
             <input type="number" name="price" placeholder="Price" step="0.01" required>
+
+            <!-- ✅ Dropdown for type -->
+            <label>Product Type:</label>
+            <select name="type" required>
+                <option value="">-- Select Type --</option>
+                <option value="Shirt">Shirt / Tee</option>
+                <option value="Hoodie">Hoodie</option>
+                <option value="Sweater">Sweater</option>
+                <option value="Pants">Pants</option>
+                <option value="Sweatpants">Sweatpants</option>
+                <option value="Shorts">Shorts</option>
+                <option value="Cap">Cap</option>
+                <option value="Accessories">Accessories</option>
+            </select>
+
             <label>Stocks per Size:</label>
             <input type="number" name="stock_s" placeholder="Stock - Small (S)" min="0" required>
             <input type="number" name="stock_m" placeholder="Stock - Medium (M)" min="0" required>
             <input type="number" name="stock_l" placeholder="Stock - Large (L)" min="0" required>
             <input type="number" name="stock_xl" placeholder="Stock - X-Large (XL)" min="0" required>
-
 
             <label>Front Design Image:</label>
             <input type="file" name="front_image" accept="image/*" required>
@@ -194,12 +238,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label>Back Design Image:</label>
             <input type="file" name="back_image" accept="image/*" required>
 
+            <label>Size Chart Image:</label>
+            <input type="file" name="size_chart" accept="image/*" required>
+
             <label>Additional Images (optional):</label>
             <input type="file" name="images[]" multiple>
 
             <button type="submit">Upload Product</button>
         </form>
-
     </div>
 </body>
 </html>

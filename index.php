@@ -294,11 +294,10 @@
 <!-- Hero -->
 <section class="hero">
   <div class="hero-overlay"></div>
-  <img src="assets/logooo.jpg" alt="New Drop" class="hero-img">
+  <img src="assets/offtnew.png" alt="New Drop" class="hero-img">
   <div class="hero-text">
-    <h1 class="glow">DROP 03 OUT NOW</h1>
+    <h1 class="glow">THREADZ ON TOP!</h1>
     <div class="tagline flicker">ALL EYEZ ON ME</div>
-    <a href="products.php" class="shop-btn">SHOP NOW</a>
   </div>
 </section>
 
