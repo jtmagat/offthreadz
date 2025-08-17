@@ -15,23 +15,23 @@ if ($res) {
     $productCount = $row['total'] ?? 0;
 }
 
-// STOCK COUNT
-$stockCount = 0;
-$res = $conn->query("SELECT SUM(stock_s + stock_m + stock_l + stock_xl) AS total FROM products");
+// TOTAL STOCKS (all stocks available now)
+$totalStocks = 0;
+$res = $conn->query("SELECT SUM(stock_s + stock_m + stock_l + stock_xl) AS total FROM products"); 
 if ($res) {
     $row = $res->fetch_assoc();
-    $stockCount = $row['total'] ?? 0;
+    $totalStocks = $row['total'] ?? 0;
 }
 
-// SALES
+// SALES (from orders table)
 $sales = 0;
-$res = $conn->query("SELECT SUM(amount) AS total FROM sales");
+$res = $conn->query("SELECT SUM(total_price) AS total FROM orders");
 if ($res) {
     $row = $res->fetch_assoc();
     $sales = $row['total'] ?? 0;
 }
 
-// ORDERS
+// ORDERS COUNT
 $orders = 0;
 $res = $conn->query("SELECT COUNT(*) AS total FROM orders");
 if ($res) {
@@ -39,16 +39,13 @@ if ($res) {
     $orders = $row['total'] ?? 0;
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Dashboard – OFFTHREADZ</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -58,10 +55,7 @@ if ($res) {
       padding: 40px;
     }
 
-    h1 {
-      font-size: 34px;
-      margin-bottom: 30px;
-    }
+    h1 { font-size: 34px; margin-bottom: 30px; }
 
     .dashboard {
       display: grid;
@@ -75,6 +69,10 @@ if ($res) {
       padding: 30px;
       box-shadow: 0 0 12px rgba(0, 255, 255, 0.07);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
     }
 
     .card:hover {
@@ -103,49 +101,39 @@ if ($res) {
       margin-bottom: 25px;
     }
 
-    .buttons {
-    display: flex;
-    gap: 12px;
-  }
+    .buttons { display: flex; gap: 12px; }
 
-  .nav-btn {
-    background: #ffffff;
-    color: #1a1a1a;
-    padding: 10px 18px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: background 0.3s ease;
-  }
+    .nav-btn {
+      background: #ffffff;
+      color: #1a1a1a;
+      padding: 10px 18px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
 
-  .nav-btn:hover {
-    background: #e5e5e5;
-  }
+    .nav-btn:hover { background: #e5e5e5; }
 
-  .logout-btn {
-    background: #ffffff;
-    color: #c40812;
-    border: 2px solid #c40812;
-    padding: 10px 20px;
-    border-radius: 10px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background 0.3s ease, color 0.3s ease;
-  }
+    .logout-btn {
+      background: #ffffff;
+      color: #c40812;
+      border: 2px solid #c40812;
+      padding: 10px 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
 
-  .logout-btn:hover {
-    background: #f8d7da;
-    color: #a4000d;
-  }
+    .logout-btn:hover {
+      background: #f8d7da;
+      color: #a4000d;
+    }
 
     @media (max-width: 600px) {
-      .dashboard {
-        grid-template-columns: 1fr;
-      }
-      .topbar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
+      .dashboard { grid-template-columns: 1fr; }
+      .topbar { flex-direction: column; align-items: flex-start; }
     }
   </style>
 </head>
@@ -156,11 +144,10 @@ if ($res) {
   <div class="buttons">
     <a href="index.php" class="nav-btn"> Why OFFT?</a>
     <a href="add_product.php" class="nav-btn"> Add Product</a>
-    <a href="upload.php" class="nav-btn"> All Products</a>
+    <a href="all_products.php" class="nav-btn"> All Products</a>
     <a href="logout.php" class="logout-btn"> Logout</a>
   </div>
 </div>
-
 
   <div class="dashboard">
     <div class="card">
@@ -168,17 +155,17 @@ if ($res) {
       <div class="value"><?= $productCount ?></div>
     </div>
     <div class="card">
-      <h2>Total Stocks</h2>
-      <div class="value"><?= $stockCount ?></div>
+      <h2>Total Stocks (Current)</h2>
+      <div class="value"><?= $totalStocks ?></div>
     </div>
     <div class="card">
       <h2>Total Sales</h2>
       <div class="value">₱<?= number_format($sales, 2) ?></div>
     </div>
-    <div class="card">
+    <a href="orders.php" class="card">
       <h2>Orders</h2>
       <div class="value"><?= $orders ?></div>
-    </div>
+    </a>
   </div>
 
 </body>

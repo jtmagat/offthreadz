@@ -132,7 +132,7 @@ $total = array_reduce($items, fn($sum, $i) => $sum + ($i['price'] * $i['qty']), 
     </tr>
   </table>
   <div style="text-align: center; margin-top: 1.5rem;">
-    <button class="btn" type="submit" name="update_cart">Update Cart</button>
+    <a class="btn" href="checkout.php">Checkout</a>
     <a class="btn" href="products.php">Continue Shopping</a>
   </div>
 </form>
