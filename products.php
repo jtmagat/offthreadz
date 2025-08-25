@@ -320,7 +320,7 @@ s
               <a href="#">Drop 2</a>
             </div>
           </div>
-          <a href="#">For Her</a>
+          <a href="products_her.php">For Her</a>
         </div>
 
         <div class="nav-center">
@@ -394,89 +394,90 @@ s
       </div>
 
       <!-- Products Section -->
-      <section class="product-section">
-        <h2>Latest Drops</h2>
-        <div class="product-grid">
-          <?php
-            $conn = new mysqli("localhost", "root", "", "offthreadz_db");
+<section class="product-section">
+  <h2>Latest Drops - For Him</h2>
+  <div class="product-grid">
+    <?php
+      $conn = new mysqli("localhost", "root", "", "offthreadz_db");
+      if ($conn->connect_error) { die("Connection failed: " . $conn->connect_error); }
 
-            if ($conn->connect_error) { die("Connection failed: " . $conn->connect_error); }
+      $search = $_GET['search'] ?? '';
+      $sort = $_GET['sort'] ?? '';
+      $category = $_GET['category'] ?? '';
 
-            $search = $_GET['search'] ?? '';
-            $sort = $_GET['sort'] ?? '';
-            $category = $_GET['category'] ?? '';
+      $limit = 8;
+      $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+      $offset = ($page - 1) * $limit;
 
-            $limit = 8;
-            $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
-            $offset = ($page - 1) * $limit;
+      // ✅ Only Male products
+      $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM products WHERE gender='Male'";
 
-            $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM products WHERE 1";
+      if (!empty($search)) {
+        $search = $conn->real_escape_string($search);
+        $sql .= " AND (name LIKE '%$search%' OR description LIKE '%$search%')";
+      }
 
-            if (!empty($search)) {
-              $search = $conn->real_escape_string($search);
-              $sql .= " AND (name LIKE '%$search%' OR description LIKE '%$search%')";
-            }
+      if (!empty($category) && is_numeric($category)) {
+        $sql .= " AND category_id = " . intval($category);
+      }
 
-            if (!empty($category) && is_numeric($category)) {
-              $sql .= " AND category_id = " . intval($category);
-            }
+      switch ($sort) {
+        case 'low': $sql .= " ORDER BY price ASC"; break;
+        case 'high': $sql .= " ORDER BY price DESC"; break;
+        default: $sql .= " ORDER BY created_at DESC";
+      }
 
-            switch ($sort) {
-              case 'low': $sql .= " ORDER BY price ASC"; break;
-              case 'high': $sql .= " ORDER BY price DESC"; break;
-              default: $sql .= " ORDER BY created_at DESC";
-            }
+      $sql .= " LIMIT $limit OFFSET $offset";
+      $result = $conn->query($sql);
 
-            $sql .= " LIMIT $limit OFFSET $offset";
-            $result = $conn->query($sql);
+      if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+          $product_id = $row['id'];
+          $name = htmlspecialchars($row['name']);
+          $price = number_format($row['price'], 2);
+          $front_image = !empty($row['front_image']) ? $row['front_image'] : 'assets/default-front.png';
+          $back_image = !empty($row['back_image']) ? $row['back_image'] : 'assets/default-back.png';
 
-            if ($result && $result->num_rows > 0) {
-              while ($row = $result->fetch_assoc()) {
-                $product_id = $row['id'];
-                $name = htmlspecialchars($row['name']);
-                $price = number_format($row['price'], 2);
-                $front_image = !empty($row['front_image']) ? $row['front_image'] : 'assets/default-front.png';
-                $back_image = !empty($row['back_image']) ? $row['back_image'] : 'assets/default-back.png';
+          $total_stock = $row['stock_s'] + $row['stock_m'] + $row['stock_l'] + $row['stock_xl'];
+          $is_out = ($total_stock <= 0);
 
-                $total_stock = $row['stock_s'] + $row['stock_m'] + $row['stock_l'] + $row['stock_xl'];
-                $is_out = ($total_stock <= 0);
+          echo '<div class="product-card ' . ($is_out ? 'out-of-stock' : '') . '">';
+          echo '<a href="product_details.php?id=' . $product_id . '">';
+          echo '<div class="product-img-wrap">';
+          echo '<img src="' . $front_image . '" class="front" alt="' . $name . '">';
+          echo '<img src="' . $back_image . '" class="back" alt="Back of ' . $name . '">';
+          echo '</div>';
+          echo '<h3>' . $name . '</h3>';
+          echo '<span>₱' . $price . '</span>';
+          echo '</a>';
+          echo '</div>';
+        }
+      } else {
+        echo "<p style='text-align:center;'>No products found.</p>";
+      }
 
-                echo '<div class="product-card ' . ($is_out ? 'out-of-stock' : '') . '">';
-                echo '<a href="product_details.php?id=' . $product_id . '">';
-                echo '<div class="product-img-wrap">';
-                echo '<img src="' . $front_image . '" class="front" alt="' . $name . '">';
-                echo '<img src="' . $back_image . '" class="back" alt="Back of ' . $name . '">';
-                echo '</div>';
-                echo '<h3>' . $name . '</h3>';
-                echo '<span>₱' . $price . '</span>';
-                echo '</a>';
-                echo '</div>';
-              }
-            } else {
-              echo "<p style='text-align:center;'>No products found.</p>";
-            }
+      $total_result = $conn->query("SELECT FOUND_ROWS() AS total");
+      $total_row = $total_result->fetch_assoc();
+      $total_products = $total_row['total'];
+      $total_pages = ceil($total_products / $limit);
 
-            $total_result = $conn->query("SELECT FOUND_ROWS() AS total");
-            $total_row = $total_result->fetch_assoc();
-            $total_products = $total_row['total'];
-            $total_pages = ceil($total_products / $limit);
+      if ($total_pages > 1) {
+        echo '<div style="text-align: center; margin-top: 30px;">';
+        for ($i = 1; $i <= $total_pages; $i++) {
+          $queryParams = $_GET;
+          $queryParams['page'] = $i;
+          $link = '?' . http_build_query($queryParams);
+          $active = $i == $page ? 'style="font-weight:bold;"' : '';
+          echo "<a href='$link' $active style='margin: 0 10px; color: white;'>$i</a>";
+        }
+        echo '</div>';
+      }
 
-            if ($total_pages > 1) {
-              echo '<div style="text-align: center; margin-top: 30px;">';
-              for ($i = 1; $i <= $total_pages; $i++) {
-                $queryParams = $_GET;
-                $queryParams['page'] = $i;
-                $link = '?' . http_build_query($queryParams);
-                $active = $i == $page ? 'style="font-weight:bold;"' : '';
-                echo "<a href='$link' $active style='margin: 0 10px; color: white;'>$i</a>";
-              }
-              echo '</div>';
-            }
+      $conn->close();
+    ?>
+  </div>
+</section>
 
-            $conn->close();
-          ?>
-        </div>
-      </section>
 
       <footer style="text-align:center;padding:20px;color:#666;border-top:1px solid #222;margin-top:40px;">
         © <?= date("Y") ?> OFFTHREADZ. All rights reserved.
